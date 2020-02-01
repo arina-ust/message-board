@@ -13,8 +13,7 @@ import org.springframework.test.context.jdbc.Sql;
 import java.time.OffsetDateTime;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Sql("/truncate_tables.sql")
@@ -85,9 +84,7 @@ public class MessagesServiceTest {
     @Test
     public void deleteMessageTest() {
         MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", 1);
-
         MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
-
         MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
 
         messagesService.createMessage(messageDTO1);
@@ -105,4 +102,39 @@ public class MessagesServiceTest {
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
         assertEquals(2, messagesService.getAllMessages().size());
     }
+
+    @Test
+    public void updateTest() {
+        String title1 = "Title of the message 1";
+        String text1 = "Text of the message 1";
+        MessageDTO messageDTO1 = createMessageDTO(title1, text1, 1);
+
+        messagesService.createMessage(messageDTO1);
+
+        List<Message> messages = messagesService.getMessagesForUser(USERNAME_1);
+        assertEquals(1, messages.size());
+
+        Message firstMessage = messages.get(0);
+        long differenceInCreatedAndUpdated = firstMessage.getCreatedAt().getNano() -
+                firstMessage.getUpdatedAt().getNano();
+
+
+        String title2 = "Updated Title of the message 1";
+        String text2 = "Updated Text of the message 1";
+        MessageDTO updatedMessageDTO = createMessageDTO(title2, text2, 1);
+        updatedMessageDTO.setId(firstMessage.getId());
+        updatedMessageDTO.setUserId(firstMessage.getUserId());
+
+        messagesService.updateMessage(updatedMessageDTO);
+
+        List<Message> messagesAgain = messagesService.getMessagesForUser(USERNAME_1);
+        assertEquals(1, messagesAgain.size());
+
+        Message messageUpdated = messagesAgain.get(0);
+        assertEquals(title2, messageUpdated.getTitle());
+        assertEquals(text2, messageUpdated.getText());
+        assertNotEquals(differenceInCreatedAndUpdated, messageUpdated.getCreatedAt().getNano() -
+                messageUpdated.getUpdatedAt().getNano());
+    }
+
 }

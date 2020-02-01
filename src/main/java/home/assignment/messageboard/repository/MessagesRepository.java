@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Repository
 public class MessagesRepository {
@@ -32,7 +33,7 @@ public class MessagesRepository {
     }
 
     public List<Message> getMessagesForUser(String username) {
-        return dslContext.select(messagesTable.USER_ID, messagesTable.TITLE, messagesTable.TEXT,
+        return dslContext.select(messagesTable.ID, messagesTable.TITLE, messagesTable.TEXT,
                 messagesTable.USER_ID, messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
                 .from(messagesTable)
                 .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
@@ -47,8 +48,23 @@ public class MessagesRepository {
     }
 
     @Transactional
-    public void updateMessage(int messageId, Message newMessage) {
-        throw new UnsupportedOperationException();
+    public void updateMessage(Message message) {
+        int messageId = message.getId();
+
+        if (!exists(messageId)) {
+            throw new NoSuchElementException("Message with id = " + messageId + " does not exist. Cannot update it!");
+        }
+
+        dslContext.update(messagesTable)
+                .set(messagesTable.TITLE, message.getTitle())
+                .set(messagesTable.TEXT, message.getText())
+                .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
+                .where(messagesTable.ID.eq(messageId))
+                .execute();
+    }
+
+    private boolean exists(int messageId) {
+        return dslContext.selectFrom(messagesTable).where(messagesTable.ID.eq(messageId)).fetchAny() != null;
     }
 
     @Transactional

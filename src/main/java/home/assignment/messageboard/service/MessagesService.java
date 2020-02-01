@@ -5,6 +5,7 @@ import home.assignment.messageboard.model.MessageDTO;
 import home.assignment.messageboard.repository.MessagesRepository;
 import org.springframework.stereotype.Service;
 
+import java.time.OffsetDateTime;
 import java.util.List;
 
 @Service
@@ -30,10 +31,27 @@ public class MessagesService {
 
     // TODO get user id or username from token
     private Message mapFromDto(MessageDTO messageDTO) {
-        return new Message(messageDTO.getTitle(), messageDTO.getText(), messageDTO.getUserId());
+        String createdAt = messageDTO.getCreatedAt();
+        String updatedAt = messageDTO.getUpdatedAt();
+
+        OffsetDateTime parsedCreateAt = createdAt == null ? null : OffsetDateTime.parse(createdAt);
+        OffsetDateTime parsedUpdatedAt = updatedAt == null ? null : OffsetDateTime.parse(updatedAt);
+
+        return new Message(
+                messageDTO.getId(),
+                messageDTO.getTitle(),
+                messageDTO.getText(),
+                messageDTO.getUserId(),
+                parsedCreateAt,
+                parsedUpdatedAt
+        );
     }
 
     public void deleteMessage(int messageId) {
         messagesRepository.deleteMessage(messageId);
+    }
+
+    public void updateMessage(MessageDTO messageDTO) {
+        messagesRepository.updateMessage(mapFromDto(messageDTO));
     }
 }

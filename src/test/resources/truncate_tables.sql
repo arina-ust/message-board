@@ -1,9 +1,9 @@
 SET REFERENTIAL_INTEGRITY FALSE;
 
 TRUNCATE TABLE message_board.messages;
+ALTER SEQUENCE message_board.s_users_id RESTART WITH 1;
 
 TRUNCATE TABLE message_board.users;
-
-ALTER SEQUENCE message_board.s_users_id RESTART WITH 1;
+ALTER SEQUENCE message_board.s_messages_id RESTART WITH 1;
 
 SET REFERENTIAL_INTEGRITY TRUE;
