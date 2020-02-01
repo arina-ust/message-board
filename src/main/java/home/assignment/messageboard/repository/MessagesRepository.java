@@ -53,6 +53,6 @@ public class MessagesRepository {
 
     @Transactional
     public void deleteMessage(int messageId) {
-        throw new UnsupportedOperationException();
+        dslContext.deleteFrom(messagesTable).where(messagesTable.ID.eq(messageId)).execute();
     }
 }

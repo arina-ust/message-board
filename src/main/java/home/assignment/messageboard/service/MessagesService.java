@@ -32,4 +32,8 @@ public class MessagesService {
     private Message mapFromDto(MessageDTO messageDTO) {
         return new Message(messageDTO.getTitle(), messageDTO.getText(), messageDTO.getUserId());
     }
+
+    public void deleteMessage(int messageId) {
+        messagesRepository.deleteMessage(messageId);
+    }
 }
