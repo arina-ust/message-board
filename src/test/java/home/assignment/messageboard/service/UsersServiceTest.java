@@ -15,7 +15,7 @@ import javax.management.InstanceAlreadyExistsException;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Sql("/truncate_users.sql")
+@Sql("/truncate_tables.sql")
 public class UsersServiceTest {
 
     @Autowired

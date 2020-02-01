@@ -43,3 +43,24 @@ components:
       required:
         - username
         - password
+
+    messageDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        text:
+          type: string
+        userId:
+          type: integer
+        createdAt:
+          type: string
+          format: datetime
+        updatedAt:
+          type: string
+          format: datetime
+      required:
+        - title
+        - text

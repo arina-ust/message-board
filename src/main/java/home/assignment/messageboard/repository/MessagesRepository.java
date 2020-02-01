@@ -3,6 +3,7 @@ package home.assignment.messageboard.repository;
 import home.assignment.messageboard.model.Message;
 import org.jooq.DSLContext;
 import org.jooq.generated.flyway.db.h2.tables.Messages;
+import org.jooq.generated.flyway.db.h2.tables.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -17,6 +18,7 @@ public class MessagesRepository {
     private DSLContext dslContext;
 
     private static Messages messagesTable = Messages.MESSAGES;
+    private static Users usersTable = Users.USERS;
 
     @Transactional
     public void createMessage(Message message) {
@@ -29,9 +31,12 @@ public class MessagesRepository {
                 .execute();
     }
 
-    public List<Message> getMessagesForUser(int userId) {
-        return dslContext.selectFrom(messagesTable)
-                .where(messagesTable.USER_ID.eq(userId))
+    public List<Message> getMessagesForUser(String username) {
+        return dslContext.select(messagesTable.USER_ID, messagesTable.TITLE, messagesTable.TEXT,
+                messagesTable.USER_ID, messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
+                .from(messagesTable)
+                .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
+                .where(usersTable.USERNAME.eq(username))
                 .fetchInto(Message.class);
 
     }
