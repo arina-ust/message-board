@@ -5,6 +5,7 @@ import org.jooq.DSLContext;
 import org.jooq.generated.flyway.db.h2.tables.Users;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 @Repository
 public class UsersRepository {
@@ -14,6 +15,7 @@ public class UsersRepository {
 
     private static Users usersTable = Users.USERS;
 
+    @Transactional
     public void createUser(User user) {
         dslContext.insertInto(usersTable)
                 .set(usersTable.USERNAME, user.getUserName())
