@@ -4,7 +4,7 @@ public class User {
 
     private Integer id;
     private String userName;
-    private String passwordHash; // TODO: is it a string?
+    private String passwordHash;
 
     public User(String userName, String passwordHash) {
         this.userName = userName;

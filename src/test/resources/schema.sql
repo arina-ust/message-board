@@ -1,3 +1,8 @@
+DROP SCHEMA message_board IF EXISTS;
+
+CREATE SCHEMA message_board;
+
+
 CREATE SEQUENCE message_board.s_users_id START WITH 1;
 
 CREATE TABLE message_board.users (

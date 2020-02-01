@@ -26,12 +26,20 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/testDTO'
+                hello:
+                  type: string
 
 components:
   schemas:
-    testDTO:
+    userDTO:
       type: object
       properties:
-        testResponse:
+        id:
+          type: integer
+        username:
           type: string
+        password:
+          type: string
+      required:
+        - username
+        - password

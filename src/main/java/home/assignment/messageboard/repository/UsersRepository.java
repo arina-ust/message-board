@@ -3,6 +3,7 @@ package home.assignment.messageboard.repository;
 import home.assignment.messageboard.model.User;
 import org.jooq.DSLContext;
 import org.jooq.generated.flyway.db.h2.tables.Users;
+import org.jooq.generated.flyway.db.h2.tables.records.UsersRecord;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,13 @@ public class UsersRepository {
         return dslContext.selectFrom(usersTable)
                 .where(usersTable.USERNAME.eq(username))
                 .fetchOneInto(User.class);
+    }
+
+    public boolean exists(String username) {
+        UsersRecord record = dslContext.selectFrom(usersTable)
+                .where(usersTable.USERNAME.eq(username))
+                .fetchAny();
+        return record != null;
     }
 
 }
