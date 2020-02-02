@@ -6,10 +6,14 @@ import home.assignment.messageboard.repository.MessagesRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class MessagesService {
+
+    private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ISO_DATE_TIME;
 
     private MessagesRepository messagesRepository;
 
@@ -17,8 +21,21 @@ public class MessagesService {
         this.messagesRepository = messagesRepository;
     }
 
-    public List<Message> getAllMessages() {
-        return messagesRepository.getAllMessages();
+    public List<MessageDTO> getAllMessages() {
+        return messagesRepository.getAllMessages()
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
+    }
+
+    private MessageDTO mapToDto(Message message) {
+        return new MessageDTO()
+                .id(message.getId())
+                .title(message.getTitle())
+                .text(message.getText())
+                .userId(message.getUserId())
+                .createdAt(message.getCreatedAt().format(DATE_TIME_FORMATTER))
+                .updatedAt(message.getUpdatedAt().format(DATE_TIME_FORMATTER));
     }
 
     public List<Message> getMessagesForUser(String username) {
@@ -39,9 +56,9 @@ public class MessagesService {
 
         return new Message(
                 messageDTO.getId(),
+                messageDTO.getUserId(),
                 messageDTO.getTitle(),
                 messageDTO.getText(),
-                messageDTO.getUserId(),
                 parsedCreateAt,
                 parsedUpdatedAt
         );

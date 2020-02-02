@@ -5,9 +5,9 @@ import java.time.OffsetDateTime;
 public class Message {
 
     private Integer id;
+    private Integer userId;
     private String title;
     private String text;
-    private Integer userId;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
@@ -17,11 +17,11 @@ public class Message {
         this.userId = userId;
     }
 
-    public Message(Integer id, String title, String text, Integer userId, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    public Message(Integer id, Integer userId, String title, String text, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         this.id = id;
+        this.userId = userId;
         this.title = title;
         this.text = text;
-        this.userId = userId;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

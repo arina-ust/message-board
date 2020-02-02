@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.jdbc.Sql;
 
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -135,6 +136,33 @@ public class MessagesServiceTest {
         assertEquals(text2, messageUpdated.getText());
         assertNotEquals(differenceInCreatedAndUpdated, messageUpdated.getCreatedAt().getNano() -
                 messageUpdated.getUpdatedAt().getNano());
+    }
+
+    @Test
+    public void getAllMessagesTest() {
+        String title1 = "Title of the message 1";
+        String text1 = "Text of the message 1";
+        MessageDTO messageDTO1 = createMessageDTO(title1, text1, 1);
+
+        messagesService.createMessage(messageDTO1);
+
+        List<MessageDTO> allMessages = messagesService.getAllMessages();
+
+        assertEquals(1, allMessages.size());
+
+        MessageDTO messageDTO1constructed = allMessages.get(0);
+
+        assertEquals(title1, messageDTO1constructed.getTitle());
+        assertEquals(text1, messageDTO1constructed.getText());
+        assertEquals(1, messageDTO1constructed.getUserId());
+
+        try {
+            OffsetDateTime.parse(messageDTO1constructed.getCreatedAt());
+            OffsetDateTime.parse(messageDTO1constructed.getUpdatedAt());
+        } catch (DateTimeParseException e) {
+            e.printStackTrace();
+            fail();
+        }
     }
 
 }

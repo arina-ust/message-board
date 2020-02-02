@@ -33,8 +33,8 @@ public class MessagesRepository {
     }
 
     public List<Message> getMessagesForUser(String username) {
-        return dslContext.select(messagesTable.ID, messagesTable.TITLE, messagesTable.TEXT,
-                messagesTable.USER_ID, messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
+        return dslContext.select(messagesTable.ID, messagesTable.USER_ID, messagesTable.TITLE, messagesTable.TEXT,
+                messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
                 .from(messagesTable)
                 .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
                 .where(usersTable.USERNAME.eq(username))

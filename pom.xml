@@ -118,6 +118,7 @@
 								<library>spring-boot</library>
 								<dateLibrary>java8</dateLibrary>
 								<sourceFolder>src/generated/java/main</sourceFolder>
+								<delegatePattern>true</delegatePattern>
 							</configOptions>
 						</configuration>
 					</execution>

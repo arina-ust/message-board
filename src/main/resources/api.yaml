@@ -15,19 +15,31 @@ tags:
 paths:
   /v1:
     get:
-      summary: 'Hello world'
-      description: 'Test'
+      summary: 'Get all the messages on the board'
       tags:
         - message-board
-      operationId: getTest
+      operationId: getAllMessages
+# TODO: implement pagination
+#      parameters:
+#        - in: query
+#          name: offset
+#          description: 'The number of messages to skip'
+#          schema:
+#            type: integer
+#        - in: query
+#          name: limit
+#          description: 'The number of messages to return'
+#          schema:
+#            type: integer
       responses:
         200:
-          description: 'All good'
+          description: 'List of all the messages'
           content:
             application/json:
               schema:
-                hello:
-                  type: string
+                $ref:
+                  '#/components/schemas/messageListDTO'
+
 
 components:
   schemas:
@@ -64,3 +76,11 @@ components:
       required:
         - title
         - text
+
+    messageListDTO:
+      type: object
+      properties:
+        messages:
+          type: array
+          items:
+            $ref: '#/components/schemas/messageDTO'
