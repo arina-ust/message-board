@@ -1,6 +1,5 @@
 package home.assignment.messageboard.service;
 
-import home.assignment.messageboard.model.Message;
 import home.assignment.messageboard.model.MessageDTO;
 import org.jooq.DSLContext;
 import org.jooq.generated.flyway.db.h2.tables.Users;
@@ -49,12 +48,12 @@ public class MessagesServiceTest {
 
         messagesService.createMessage(messageDTO1);
 
-        List<Message> messages = messagesService.getMessagesForUser(USERNAME_1);
+        List<MessageDTO> messages = messagesService.getMessagesForUser(USERNAME_1, null, null);
         assertEquals(1, messages.size());
-        Message messageFound = messages.get(0);
+        MessageDTO messageFound = messages.get(0);
         assertEquals(title1, messageFound.getTitle());
         assertEquals(text1, messageFound.getText());
-        assertTrue(OffsetDateTime.now().isAfter(messageFound.getCreatedAt()));
+        assertTrue(OffsetDateTime.now().isAfter(OffsetDateTime.parse(messageFound.getCreatedAt())));
 
 
         MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
@@ -62,7 +61,7 @@ public class MessagesServiceTest {
         messagesService.createMessage(messageDTO2);
 
         assertEquals(2, messagesService.getAllMessages(null, null).size());
-        assertEquals(2, messagesService.getMessagesForUser(USERNAME_1).size());
+        assertEquals(2, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
 
 
         MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
@@ -70,8 +69,8 @@ public class MessagesServiceTest {
         messagesService.createMessage(messageDTO3);
 
         assertEquals(3, messagesService.getAllMessages(null, null).size());
-        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
-        assertEquals(2, messagesService.getMessagesForUser(USERNAME_1).size());
+        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2, null, null).size());
+        assertEquals(2, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
     }
 
     private MessageDTO createMessageDTO(String title, String text, int userId) {
@@ -92,15 +91,15 @@ public class MessagesServiceTest {
         messagesService.createMessage(messageDTO2);
         messagesService.createMessage(messageDTO3);
 
-        assertEquals(2, messagesService.getMessagesForUser(USERNAME_1).size());
-        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
+        assertEquals(2, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
+        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2, null, null).size());
         assertEquals(3, messagesService.getAllMessages(null, null).size());
 
-        Message message = messagesService.getMessagesForUser(USERNAME_1).get(0);
+        MessageDTO message = messagesService.getMessagesForUser(USERNAME_1, null, null).get(0);
         messagesService.deleteMessage(message.getId());
 
-        assertEquals(1, messagesService.getMessagesForUser(USERNAME_1).size());
-        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
+        assertEquals(1, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
+        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2, null, null).size());
         assertEquals(2, messagesService.getAllMessages(null, null).size());
     }
 
@@ -112,12 +111,12 @@ public class MessagesServiceTest {
 
         messagesService.createMessage(messageDTO1);
 
-        List<Message> messages = messagesService.getMessagesForUser(USERNAME_1);
+        List<MessageDTO> messages = messagesService.getMessagesForUser(USERNAME_1, null, null);
         assertEquals(1, messages.size());
 
-        Message firstMessage = messages.get(0);
-        long differenceInCreatedAndUpdated = firstMessage.getCreatedAt().getNano() -
-                firstMessage.getUpdatedAt().getNano();
+        MessageDTO firstMessage = messages.get(0);
+        long differenceInCreatedAndUpdated = OffsetDateTime.parse(firstMessage.getCreatedAt()).getNano() -
+                OffsetDateTime.parse(firstMessage.getUpdatedAt()).getNano();
 
 
         String title2 = "Updated Title of the message 1";
@@ -128,14 +127,14 @@ public class MessagesServiceTest {
 
         messagesService.updateMessage(updatedMessageDTO);
 
-        List<Message> messagesAgain = messagesService.getMessagesForUser(USERNAME_1);
+        List<MessageDTO> messagesAgain = messagesService.getMessagesForUser(USERNAME_1, null, null);
         assertEquals(1, messagesAgain.size());
 
-        Message messageUpdated = messagesAgain.get(0);
+        MessageDTO messageUpdated = messagesAgain.get(0);
         assertEquals(title2, messageUpdated.getTitle());
         assertEquals(text2, messageUpdated.getText());
-        assertNotEquals(differenceInCreatedAndUpdated, messageUpdated.getCreatedAt().getNano() -
-                messageUpdated.getUpdatedAt().getNano());
+        assertNotEquals(differenceInCreatedAndUpdated, OffsetDateTime.parse(messageUpdated.getCreatedAt()).getNano() -
+                OffsetDateTime.parse(messageUpdated.getUpdatedAt()).getNano());
     }
 
     @Test

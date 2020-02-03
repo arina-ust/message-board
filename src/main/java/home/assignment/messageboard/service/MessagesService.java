@@ -38,8 +38,11 @@ public class MessagesService {
                 .updatedAt(message.getUpdatedAt().format(DATE_TIME_FORMATTER));
     }
 
-    public List<Message> getMessagesForUser(String username) {
-        return messagesRepository.getMessagesForUser(username);
+    public List<MessageDTO> getMessagesForUser(String username, Integer offset, Integer limit) {
+        return messagesRepository.getMessagesForUser(username, offset, limit)
+                .stream()
+                .map(this::mapToDto)
+                .collect(Collectors.toList());
     }
 
     public void createMessage(MessageDTO messageDTO) {

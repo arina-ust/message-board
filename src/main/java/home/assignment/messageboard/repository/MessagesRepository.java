@@ -32,13 +32,15 @@ public class MessagesRepository {
                 .execute();
     }
 
-    public List<Message> getMessagesForUser(String username) {
+    public List<Message> getMessagesForUser(String username, Integer offset, Integer limit) {
         return dslContext.select(messagesTable.ID, messagesTable.USER_ID, messagesTable.TITLE, messagesTable.TEXT,
                 messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
                 .from(messagesTable)
                 .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
                 .where(usersTable.USERNAME.eq(username))
                 .orderBy(messagesTable.UPDATED_AT.desc())
+                .offset(offset)
+                .limit(limit)
                 .fetchInto(Message.class);
 
     }

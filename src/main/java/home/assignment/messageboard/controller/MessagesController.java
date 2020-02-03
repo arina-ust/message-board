@@ -3,8 +3,11 @@ package home.assignment.messageboard.controller;
 import home.assignment.messageboard.api.V1ApiDelegate;
 import home.assignment.messageboard.model.MessageDTO;
 import home.assignment.messageboard.model.MessageListDTO;
+import home.assignment.messageboard.model.User;
 import home.assignment.messageboard.service.MessagesService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 
 import java.net.URI;
@@ -27,12 +30,15 @@ public class MessagesController implements V1ApiDelegate {
     }
 
     // TODO: get user id or ursername from token
-//    @Override
-//    public ResponseEntity<MessageListDTO> getMessagesForUser(Integer offset, Integer limit) {
-//        MessageListDTO messagesDTO = new MessageListDTO();
-//        messagesDTO.setMessages(messagesService.getMessagesForUser(offset, limit));
-//        return ResponseEntity.ok(messagesDTO);
-//    }
+    @Override
+    public ResponseEntity<MessageListDTO> getMessagesForUser(Integer offset, Integer limit) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = ((User) authentication.getPrincipal()).getUserName();
+
+        MessageListDTO messagesDTO = new MessageListDTO();
+        messagesDTO.setMessages(messagesService.getMessagesForUser(username, offset, limit));
+        return ResponseEntity.ok(messagesDTO);
+    }
 
     @Override
     public ResponseEntity<Void> createMessage(MessageDTO body) {
