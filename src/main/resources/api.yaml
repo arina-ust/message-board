@@ -13,7 +13,7 @@ tags:
     description: Public message board service
 
 paths:
-  /v1:
+  /v1/board:
     get:
       summary: 'Get all the messages on the board'
       tags:
@@ -39,7 +39,89 @@ paths:
               schema:
                 $ref:
                   '#/components/schemas/messageListDTO'
-
+  /v1/messages:
+    get:
+      summary: 'Get messages created by the user'
+      tags:
+        - message-board
+      operationId: getMessagesForUser
+# TODO: implement pagination
+#      parameters:
+#        - in: query
+#          name: offset
+#          description: 'The number of messages to skip'
+#          schema:
+#            type: integer
+#        - in: query
+#          name: limit
+#          description: 'The number of messages to return'
+#          schema:
+#            type: integer
+      responses:
+        200:
+          description: 'List of messages created by the user'
+          content:
+            application/json:
+              schema:
+                $ref:
+                  '#/components/schemas/messageListDTO'
+    post:
+      summary: 'Create new message'
+      tags:
+        - message-board
+      operationId: createMessage
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/messageDTO'
+      responses:
+        201:
+          description: 'Created new message'
+  /v1/messages/{id}:
+    put:
+      summary: 'Update message'
+      tags:
+        - message-board
+      operationId: updateMessage
+      parameters:
+        - in: path
+          name: id
+          description: 'Message id'
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/messageDTO'
+      responses:
+        204:
+          description: 'Updated the message'
+        404:
+          description: 'Message not found, cannot update it'
+    delete:
+      summary: 'Delete message'
+      tags:
+        - message-board
+      operationId: deleteMessage
+      parameters:
+        - in: path
+          name: id
+          description: 'Message id'
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+      responses:
+        204:
+          description: 'Deleted the message'
 
 components:
   schemas:
