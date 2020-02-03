@@ -1,27 +1,61 @@
 package home.assignment.messageboard.configuration;
 
+import home.assignment.messageboard.configuration.jwt.JwtRequestFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationEntryPoint;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
+
+    private JwtRequestFilter jwtRequestFilter;
+    private UserDetailsService jwtUserDetailsService;
+
+    public SecurityConfiguration(JwtRequestFilter jwtRequestFilter, UserDetailsService jwtUserDetailsService) {
+        this.jwtRequestFilter = jwtRequestFilter;
+        this.jwtUserDetailsService = jwtUserDetailsService;
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers("/v1/**").authenticated()
                 .antMatchers("/v1/board/**").permitAll()
-                .antMatchers("/**").permitAll();
+                .antMatchers("/**").permitAll()
+                .and()
+                .exceptionHandling()
+                .authenticationEntryPoint(new BasicAuthenticationEntryPoint())
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        auth.userDetailsService(jwtUserDetailsService).passwordEncoder(passwordEncoder());
     }
 }
