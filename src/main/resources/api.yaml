@@ -13,6 +13,44 @@ tags:
     description: Public message board service
 
 paths:
+  /v1/sign-in:
+    post:
+      summary: 'Sign in into the board service'
+      tags:
+        - message-board
+      operationId: signIn
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/userDTO'
+      responses:
+        200:
+          description: 'Successful sign-in'
+        400:
+          descirption: 'User does not exist or password is incorrect'
+
+  /v1/sign-up:
+    post:
+      summary: 'Sign up to the board service'
+      tags:
+        - message-board
+      operationId: signUp
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref:
+                '#/components/schemas/userDTO'
+      responses:
+        200:
+          description: 'Successful sign-up'
+        400:
+          description: 'User already exists'
+
   /v1/board:
     get:
       summary: 'Get all the messages on the board'
@@ -72,6 +110,8 @@ paths:
       tags:
         - message-board
       operationId: createMessage
+      security:
+        - bearerAuth: []
       requestBody:
         required: true
         content:
@@ -88,6 +128,8 @@ paths:
       tags:
         - message-board
       operationId: updateMessage
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -113,6 +155,8 @@ paths:
       tags:
         - message-board
       operationId: deleteMessage
+      security:
+        - bearerAuth: []
       parameters:
         - in: path
           name: id
@@ -126,6 +170,12 @@ paths:
           description: 'Deleted the message'
 
 components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
   schemas:
     userDTO:
       type: object
