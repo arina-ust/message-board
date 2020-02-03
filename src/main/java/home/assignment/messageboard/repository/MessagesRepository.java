@@ -38,12 +38,14 @@ public class MessagesRepository {
                 .from(messagesTable)
                 .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
                 .where(usersTable.USERNAME.eq(username))
+                .orderBy(messagesTable.UPDATED_AT.desc())
                 .fetchInto(Message.class);
 
     }
 
     public List<Message> getAllMessages() {
         return dslContext.selectFrom(messagesTable)
+                .orderBy(messagesTable.CREATED_AT.desc())
                 .fetchInto(Message.class);
     }
 

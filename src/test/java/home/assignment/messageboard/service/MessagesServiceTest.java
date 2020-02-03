@@ -163,6 +163,21 @@ public class MessagesServiceTest {
             e.printStackTrace();
             fail();
         }
+
+
+        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
+        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
+
+        messagesService.createMessage(messageDTO2);
+        messagesService.createMessage(messageDTO3);
+
+        List<MessageDTO> allMessagesAgain = messagesService.getAllMessages();
+
+        assertEquals(3, allMessagesAgain.size());
+
+        OffsetDateTime message1CreatedAt = OffsetDateTime.parse(allMessagesAgain.get(0).getCreatedAt());
+        OffsetDateTime message3CreatedAt = OffsetDateTime.parse(allMessagesAgain.get(2).getCreatedAt());
+        assertTrue(message1CreatedAt.isAfter(message3CreatedAt));
     }
 
 }
