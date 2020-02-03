@@ -19,18 +19,19 @@ paths:
       tags:
         - message-board
       operationId: getAllMessages
-# TODO: implement pagination
-#      parameters:
-#        - in: query
-#          name: offset
-#          description: 'The number of messages to skip'
-#          schema:
-#            type: integer
-#        - in: query
-#          name: limit
-#          description: 'The number of messages to return'
-#          schema:
-#            type: integer
+      parameters:
+        - in: query
+          name: offset
+          description: 'The number of messages to skip'
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          description: 'The number of messages to return'
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: 'List of all the messages'
@@ -45,18 +46,19 @@ paths:
       tags:
         - message-board
       operationId: getMessagesForUser
-# TODO: implement pagination
-#      parameters:
-#        - in: query
-#          name: offset
-#          description: 'The number of messages to skip'
-#          schema:
-#            type: integer
-#        - in: query
-#          name: limit
-#          description: 'The number of messages to return'
-#          schema:
-#            type: integer
+      parameters:
+        - in: query
+          name: offset
+          description: 'The number of messages to skip'
+          required: false
+          schema:
+            type: integer
+        - in: query
+          name: limit
+          description: 'The number of messages to return'
+          required: false
+          schema:
+            type: integer
       responses:
         200:
           description: 'List of messages created by the user'

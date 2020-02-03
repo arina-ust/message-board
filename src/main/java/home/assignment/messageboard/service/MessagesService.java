@@ -21,8 +21,8 @@ public class MessagesService {
         this.messagesRepository = messagesRepository;
     }
 
-    public List<MessageDTO> getAllMessages() {
-        return messagesRepository.getAllMessages()
+    public List<MessageDTO> getAllMessages(Integer offset, Integer limit) {
+        return messagesRepository.getAllMessages(offset, limit)
                 .stream()
                 .map(this::mapToDto)
                 .collect(Collectors.toList());

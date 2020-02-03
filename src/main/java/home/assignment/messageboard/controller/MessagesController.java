@@ -20,17 +20,17 @@ public class MessagesController implements V1ApiDelegate {
     }
 
     @Override
-    public ResponseEntity<MessageListDTO> getAllMessages() {
+    public ResponseEntity<MessageListDTO> getAllMessages(Integer offset, Integer limit) {
         MessageListDTO messagesDTO = new MessageListDTO();
-        messagesDTO.setMessages(messagesService.getAllMessages());
+        messagesDTO.setMessages(messagesService.getAllMessages(offset, limit));
         return ResponseEntity.ok(messagesDTO);
     }
 
     // TODO: get user id or ursername from token
 //    @Override
-//    public ResponseEntity<MessageListDTO> getMessagesForUser() {
+//    public ResponseEntity<MessageListDTO> getMessagesForUser(Integer offset, Integer limit) {
 //        MessageListDTO messagesDTO = new MessageListDTO();
-//        messagesDTO.setMessages(messagesService.getMessagesForUser());
+//        messagesDTO.setMessages(messagesService.getMessagesForUser(offset, limit));
 //        return ResponseEntity.ok(messagesDTO);
 //    }
 

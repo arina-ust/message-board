@@ -43,9 +43,11 @@ public class MessagesRepository {
 
     }
 
-    public List<Message> getAllMessages() {
+    public List<Message> getAllMessages(Integer offset, Integer limit) {
         return dslContext.selectFrom(messagesTable)
                 .orderBy(messagesTable.CREATED_AT.desc())
+                .offset(offset)
+                .limit(limit)
                 .fetchInto(Message.class);
     }
 

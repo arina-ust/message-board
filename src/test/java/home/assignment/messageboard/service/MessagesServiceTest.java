@@ -61,7 +61,7 @@ public class MessagesServiceTest {
 
         messagesService.createMessage(messageDTO2);
 
-        assertEquals(2, messagesService.getAllMessages().size());
+        assertEquals(2, messagesService.getAllMessages(null, null).size());
         assertEquals(2, messagesService.getMessagesForUser(USERNAME_1).size());
 
 
@@ -69,7 +69,7 @@ public class MessagesServiceTest {
 
         messagesService.createMessage(messageDTO3);
 
-        assertEquals(3, messagesService.getAllMessages().size());
+        assertEquals(3, messagesService.getAllMessages(null, null).size());
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
         assertEquals(2, messagesService.getMessagesForUser(USERNAME_1).size());
     }
@@ -94,14 +94,14 @@ public class MessagesServiceTest {
 
         assertEquals(2, messagesService.getMessagesForUser(USERNAME_1).size());
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
-        assertEquals(3, messagesService.getAllMessages().size());
+        assertEquals(3, messagesService.getAllMessages(null, null).size());
 
         Message message = messagesService.getMessagesForUser(USERNAME_1).get(0);
         messagesService.deleteMessage(message.getId());
 
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_1).size());
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_2).size());
-        assertEquals(2, messagesService.getAllMessages().size());
+        assertEquals(2, messagesService.getAllMessages(null, null).size());
     }
 
     @Test
@@ -146,7 +146,7 @@ public class MessagesServiceTest {
 
         messagesService.createMessage(messageDTO1);
 
-        List<MessageDTO> allMessages = messagesService.getAllMessages();
+        List<MessageDTO> allMessages = messagesService.getAllMessages(null, null);
 
         assertEquals(1, allMessages.size());
 
@@ -163,21 +163,57 @@ public class MessagesServiceTest {
             e.printStackTrace();
             fail();
         }
+    }
 
-
+    @Test
+    public void getAllMessagesOrderTest() {
+        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", 1);
         MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
         MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
 
+        messagesService.createMessage(messageDTO1);
         messagesService.createMessage(messageDTO2);
         messagesService.createMessage(messageDTO3);
 
-        List<MessageDTO> allMessagesAgain = messagesService.getAllMessages();
+        List<MessageDTO> allMessagesAgain = messagesService.getAllMessages(null, null);
 
         assertEquals(3, allMessagesAgain.size());
 
         OffsetDateTime message1CreatedAt = OffsetDateTime.parse(allMessagesAgain.get(0).getCreatedAt());
         OffsetDateTime message3CreatedAt = OffsetDateTime.parse(allMessagesAgain.get(2).getCreatedAt());
         assertTrue(message1CreatedAt.isAfter(message3CreatedAt));
+    }
+
+    @Test
+    public void getAllMessagesPaginationTest() {
+        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", 1);
+        String title2 = "Title of the message 2";
+        MessageDTO messageDTO2 = createMessageDTO(title2, "Text of the message 2", 1);
+        String title3 = "Title of the message 3";
+        MessageDTO messageDTO3 = createMessageDTO(title3, "Text of the message 3", 2);
+
+        messagesService.createMessage(messageDTO1);
+        messagesService.createMessage(messageDTO2);
+        messagesService.createMessage(messageDTO3);
+
+        List<MessageDTO> allMessages = messagesService.getAllMessages(0, 2);
+
+        assertEquals(2, allMessages.size());
+        assertEquals(title2, allMessages.get(1).getTitle());
+
+        List<MessageDTO> allMessagesWithOffset = messagesService.getAllMessages(1, null);
+
+        assertEquals(2, allMessagesWithOffset.size());
+        assertEquals(title2, allMessagesWithOffset.get(0).getTitle());
+
+        List<MessageDTO> allMessagesWithLimit = messagesService.getAllMessages(null, 1);
+
+        assertEquals(1, allMessagesWithLimit.size());
+        assertEquals(title3, allMessagesWithLimit.get(0).getTitle());
+
+        List<MessageDTO> allMessagesEmpty = messagesService.getAllMessages(4, 100);
+
+        assertTrue(allMessagesEmpty.isEmpty());
     }
 
 }
