@@ -53,16 +53,23 @@ public class BoardController implements V1ApiDelegate {
 
     @Override
     public ResponseEntity<MessageListDTO> getMessagesForUser(Integer offset, Integer limit) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String username = ((UserDetails) authentication.getPrincipal()).getUsername();
+        String username = getUsernameFromToken();
 
         MessageListDTO messagesDTO = new MessageListDTO();
         messagesDTO.setMessages(messagesService.getMessagesForUser(username, offset, limit));
         return ResponseEntity.ok(messagesDTO);
     }
 
+    private String getUsernameFromToken() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return ((UserDetails) authentication.getPrincipal()).getUsername();
+    }
+
     @Override
     public ResponseEntity<Void> createMessage(MessageDTO body) {
+        String username = getUsernameFromToken();
+        body.setUsername(username);
+
         messagesService.createMessage(body);
         return ResponseEntity.created(URI.create("/messages/")).build();
     }
@@ -75,6 +82,9 @@ public class BoardController implements V1ApiDelegate {
 
     @Override
     public ResponseEntity<Void> updateMessage(MessageDTO body, Integer id) {
+        String username = getUsernameFromToken();
+        body.setUsername(username);
+
         try {
             messagesService.updateMessage(body);
         } catch (NoSuchElementException e) {

@@ -184,8 +184,8 @@ components:
           type: string
         text:
           type: string
-        userId:
-          type: integer
+        username:
+          type: string
         createdAt:
           type: string
           format: datetime

@@ -33,7 +33,7 @@ public class MessagesService {
                 .id(message.getId())
                 .title(message.getTitle())
                 .text(message.getText())
-                .userId(message.getUserId())
+                .username(message.getUsername())
                 .createdAt(message.getCreatedAt().format(DATE_TIME_FORMATTER))
                 .updatedAt(message.getUpdatedAt().format(DATE_TIME_FORMATTER));
     }
@@ -49,7 +49,6 @@ public class MessagesService {
         messagesRepository.createMessage(mapFromDto(messageDTO));
     }
 
-    // TODO get user id or username from token
     private Message mapFromDto(MessageDTO messageDTO) {
         String createdAt = messageDTO.getCreatedAt();
         String updatedAt = messageDTO.getUpdatedAt();
@@ -59,7 +58,7 @@ public class MessagesService {
 
         return new Message(
                 messageDTO.getId(),
-                messageDTO.getUserId(),
+                messageDTO.getUsername(),
                 messageDTO.getTitle(),
                 messageDTO.getText(),
                 parsedCreateAt,

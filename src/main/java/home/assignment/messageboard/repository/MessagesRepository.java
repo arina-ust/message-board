@@ -26,14 +26,16 @@ public class MessagesRepository {
         dslContext.insertInto(messagesTable)
                 .set(messagesTable.TITLE, message.getTitle())
                 .set(messagesTable.TEXT, message.getText())
-                .set(messagesTable.USER_ID, message.getUserId())
+                .set(messagesTable.USER_ID, dslContext.select(Users.USERS.ID)
+                        .from(Users.USERS)
+                        .where(Users.USERS.USERNAME.eq(message.getUsername())))
                 .set(messagesTable.CREATED_AT, OffsetDateTime.now())
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .execute();
     }
 
     public List<Message> getMessagesForUser(String username, Integer offset, Integer limit) {
-        return dslContext.select(messagesTable.ID, messagesTable.USER_ID, messagesTable.TITLE, messagesTable.TEXT,
+        return dslContext.select(messagesTable.ID, usersTable.USERNAME, messagesTable.TITLE, messagesTable.TEXT,
                 messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
                 .from(messagesTable)
                 .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
@@ -46,7 +48,10 @@ public class MessagesRepository {
     }
 
     public List<Message> getAllMessages(Integer offset, Integer limit) {
-        return dslContext.selectFrom(messagesTable)
+        return dslContext.select(messagesTable.ID, usersTable.USERNAME, messagesTable.TITLE, messagesTable.TEXT,
+                messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
+                .from(messagesTable)
+                .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
                 .orderBy(messagesTable.CREATED_AT.desc())
                 .offset(offset)
                 .limit(limit)

@@ -44,7 +44,7 @@ public class MessagesServiceTest {
         String title1 = "Title of the message 1";
         String text1 = "Text of the message 1";
 
-        MessageDTO messageDTO1 = createMessageDTO(title1, text1, 1);
+        MessageDTO messageDTO1 = createMessageDTO(title1, text1, USERNAME_1);
 
         messagesService.createMessage(messageDTO1);
 
@@ -56,7 +56,7 @@ public class MessagesServiceTest {
         assertTrue(OffsetDateTime.now().isAfter(OffsetDateTime.parse(messageFound.getCreatedAt())));
 
 
-        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
+        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", USERNAME_1);
 
         messagesService.createMessage(messageDTO2);
 
@@ -64,7 +64,7 @@ public class MessagesServiceTest {
         assertEquals(2, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
 
 
-        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
+        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", USERNAME_2);
 
         messagesService.createMessage(messageDTO3);
 
@@ -73,19 +73,19 @@ public class MessagesServiceTest {
         assertEquals(2, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
     }
 
-    private MessageDTO createMessageDTO(String title, String text, int userId) {
+    private MessageDTO createMessageDTO(String title, String text, String username) {
         MessageDTO messageDTO = new MessageDTO();
         messageDTO.setTitle(title);
         messageDTO.setText(text);
-        messageDTO.setUserId(userId);
+        messageDTO.setUsername(username);
         return messageDTO;
     }
 
     @Test
     public void deleteMessageTest() {
-        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", 1);
-        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
-        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
+        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", USERNAME_1);
+        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", USERNAME_1);
+        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", USERNAME_2);
 
         messagesService.createMessage(messageDTO1);
         messagesService.createMessage(messageDTO2);
@@ -107,7 +107,7 @@ public class MessagesServiceTest {
     public void updateTest() {
         String title1 = "Title of the message 1";
         String text1 = "Text of the message 1";
-        MessageDTO messageDTO1 = createMessageDTO(title1, text1, 1);
+        MessageDTO messageDTO1 = createMessageDTO(title1, text1, USERNAME_1);
 
         messagesService.createMessage(messageDTO1);
 
@@ -121,9 +121,9 @@ public class MessagesServiceTest {
 
         String title2 = "Updated Title of the message 1";
         String text2 = "Updated Text of the message 1";
-        MessageDTO updatedMessageDTO = createMessageDTO(title2, text2, 1);
+        MessageDTO updatedMessageDTO = createMessageDTO(title2, text2, USERNAME_1);
         updatedMessageDTO.setId(firstMessage.getId());
-        updatedMessageDTO.setUserId(firstMessage.getUserId());
+        updatedMessageDTO.setUsername(firstMessage.getUsername());
 
         messagesService.updateMessage(updatedMessageDTO);
 
@@ -141,7 +141,7 @@ public class MessagesServiceTest {
     public void getAllMessagesTest() {
         String title1 = "Title of the message 1";
         String text1 = "Text of the message 1";
-        MessageDTO messageDTO1 = createMessageDTO(title1, text1, 1);
+        MessageDTO messageDTO1 = createMessageDTO(title1, text1, USERNAME_1);
 
         messagesService.createMessage(messageDTO1);
 
@@ -153,7 +153,7 @@ public class MessagesServiceTest {
 
         assertEquals(title1, messageDTO1constructed.getTitle());
         assertEquals(text1, messageDTO1constructed.getText());
-        assertEquals(1, messageDTO1constructed.getUserId());
+        assertEquals(USERNAME_1, messageDTO1constructed.getUsername());
 
         try {
             OffsetDateTime.parse(messageDTO1constructed.getCreatedAt());
@@ -166,9 +166,9 @@ public class MessagesServiceTest {
 
     @Test
     public void getAllMessagesOrderTest() {
-        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", 1);
-        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2", 1);
-        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", 2);
+        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", USERNAME_1);
+        MessageDTO messageDTO2 = createMessageDTO("Title of the message 2", "Text of the message 2",  USERNAME_1);
+        MessageDTO messageDTO3 = createMessageDTO("Title of the message 3", "Text of the message 3", USERNAME_2);
 
         messagesService.createMessage(messageDTO1);
         messagesService.createMessage(messageDTO2);
@@ -185,11 +185,11 @@ public class MessagesServiceTest {
 
     @Test
     public void getAllMessagesPaginationTest() {
-        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", 1);
+        MessageDTO messageDTO1 = createMessageDTO("Title of the message 1", "Text of the message 1", USERNAME_1);
         String title2 = "Title of the message 2";
-        MessageDTO messageDTO2 = createMessageDTO(title2, "Text of the message 2", 1);
+        MessageDTO messageDTO2 = createMessageDTO(title2, "Text of the message 2", USERNAME_1);
         String title3 = "Title of the message 3";
-        MessageDTO messageDTO3 = createMessageDTO(title3, "Text of the message 3", 2);
+        MessageDTO messageDTO3 = createMessageDTO(title3, "Text of the message 3", USERNAME_2);
 
         messagesService.createMessage(messageDTO1);
         messagesService.createMessage(messageDTO2);
