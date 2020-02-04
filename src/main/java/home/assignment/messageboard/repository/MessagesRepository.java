@@ -4,6 +4,8 @@ import home.assignment.messageboard.model.Message;
 import org.jooq.DSLContext;
 import org.jooq.generated.flyway.db.h2.tables.Messages;
 import org.jooq.generated.flyway.db.h2.tables.Users;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,6 +16,8 @@ import java.util.NoSuchElementException;
 
 @Repository
 public class MessagesRepository {
+
+    private final static Logger logger = LoggerFactory.getLogger(MessagesRepository.class);
 
     @Autowired
     private DSLContext dslContext;
@@ -32,6 +36,7 @@ public class MessagesRepository {
                 .set(messagesTable.CREATED_AT, OffsetDateTime.now())
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .execute();
+        logger.info("Created new message {}", message);
     }
 
     public List<Message> getMessagesForUser(String username, Integer offset, Integer limit) {
@@ -72,6 +77,8 @@ public class MessagesRepository {
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .where(messagesTable.ID.eq(messageId))
                 .execute();
+
+        logger.info("Updated message {}", message);
     }
 
     private boolean exists(int messageId) {
@@ -81,5 +88,6 @@ public class MessagesRepository {
     @Transactional
     public void deleteMessage(int messageId) {
         dslContext.deleteFrom(messagesTable).where(messagesTable.ID.eq(messageId)).execute();
+        logger.info("Deleted message  with id {}", messageId);
     }
 }

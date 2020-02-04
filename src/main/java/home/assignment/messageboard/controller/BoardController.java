@@ -8,6 +8,8 @@ import home.assignment.messageboard.model.UserDTO;
 import home.assignment.messageboard.service.CustomUserDetailsService;
 import home.assignment.messageboard.service.MessagesService;
 import home.assignment.messageboard.service.UsersService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,6 +26,8 @@ import java.util.NoSuchElementException;
 
 @Controller
 public class BoardController implements V1ApiDelegate {
+
+    private final static Logger logger = LoggerFactory.getLogger(BoardController.class);
 
     private MessagesService messagesService;
     private UsersService usersService;
@@ -46,6 +50,8 @@ public class BoardController implements V1ApiDelegate {
 
     @Override
     public ResponseEntity<MessageListDTO> getAllMessages(Integer offset, Integer limit) {
+        logger.debug("received getAllMessages request for offset {}, limit {}", offset, limit);
+
         MessageListDTO messagesDTO = new MessageListDTO();
         messagesDTO.setMessages(messagesService.getAllMessages(offset, limit));
         return ResponseEntity.ok(messagesDTO);
@@ -54,6 +60,7 @@ public class BoardController implements V1ApiDelegate {
     @Override
     public ResponseEntity<MessageListDTO> getMessagesForUser(Integer offset, Integer limit) {
         String username = getUsernameFromToken();
+        logger.debug("received getMessages request for user {}, offset {}, limit {}", username, offset, limit);
 
         MessageListDTO messagesDTO = new MessageListDTO();
         messagesDTO.setMessages(messagesService.getMessagesForUser(username, offset, limit));
@@ -70,12 +77,15 @@ public class BoardController implements V1ApiDelegate {
         String username = getUsernameFromToken();
         body.setUsername(username);
 
+        logger.debug("Received create message request for user {}, message {}", username, body);
+
         messagesService.createMessage(body);
         return ResponseEntity.created(URI.create("/messages/")).build();
     }
 
     @Override
     public ResponseEntity<Void> deleteMessage(Integer id) {
+        logger.debug("Received delete message request for message with id {}", id);
         messagesService.deleteMessage(id);
         return ResponseEntity.noContent().build();
     }
@@ -84,6 +94,8 @@ public class BoardController implements V1ApiDelegate {
     public ResponseEntity<Void> updateMessage(MessageDTO body, Integer id) {
         String username = getUsernameFromToken();
         body.setUsername(username);
+
+        logger.debug("Received update message request for user {}, message {}", username, body);
 
         try {
             messagesService.updateMessage(body);
@@ -98,6 +110,7 @@ public class BoardController implements V1ApiDelegate {
         try {
             authenticate(body.getUsername(), body.getPassword());
         } catch (BadCredentialsException e) {
+            logger.error("Failed to authenticate user {}. Credentials did not match existing ones.", body.getUsername());
             return ResponseEntity.badRequest().build();
         }
 
@@ -119,7 +132,7 @@ public class BoardController implements V1ApiDelegate {
         try {
             usersService.createUser(body);
         } catch (InstanceAlreadyExistsException e) {
-            e.printStackTrace();
+            logger.error("Failed to sign up. User {} already exists", body.getUsername());
             return ResponseEntity.badRequest().build();
         }
         String token = jwtTokenUtil.generateToken(body.getUsername());
