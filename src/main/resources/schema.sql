@@ -1,4 +1,6 @@
+-- [jooq ignore start]
 DROP SCHEMA message_board IF EXISTS;
+-- [jooq ignore stop]
 
 CREATE SCHEMA message_board;
 

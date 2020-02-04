@@ -18,8 +18,6 @@
 	<properties>
 		<java.version>11</java.version>
 		<client.base.package.name>home.assignment.messageboard</client.base.package.name>
-		<db.url>jdbc:h2:~/message-board</db.url>
-		<db.username>sa</db.username>
 	</properties>
 
 	<dependencies>
@@ -27,6 +25,13 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jooq</artifactId>
 		</dependency>
+
+		<dependency>
+			<groupId>org.jooq</groupId>
+			<artifactId>jooq-meta-extensions</artifactId>
+			<version>3.12.3</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
@@ -146,12 +151,31 @@
 				</executions>
 
 				<configuration>
-					<jdbc>
-						<url>${db.url}</url>
-						<user>${db.username}</user>
-					</jdbc>
 					<generator>
 						<database>
+							<name>org.jooq.meta.extensions.ddl.DDLDatabase</name>
+							<properties>
+								<property>
+									<key>scripts</key>
+									<value>src/main/resources/schema.sql</value>
+								</property>
+								<property>
+									<key>sort</key>
+									<value>none</value>
+								</property>
+								<property>
+									<key>unqualifiedSchema</key>
+									<value>none</value>
+								</property>
+								<property>
+									<key>defaultNameCase</key>
+									<value>as_is</value>
+								</property>
+								<property>
+									<key>parseIgnoreComments</key>
+									<value>true</value>
+								</property>
+							</properties>
 							<includes>.*</includes>
 							<inputSchema>MESSAGE_BOARD</inputSchema>
 						</database>
