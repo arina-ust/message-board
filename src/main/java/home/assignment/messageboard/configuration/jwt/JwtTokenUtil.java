@@ -14,8 +14,6 @@ import java.util.Map;
 @Component
 public class JwtTokenUtil {
 
-    private static final long JWT_TOKEN_LIFETIME = 10 * 60;
-
     private ApplicationProperties applicationProperties;
 
     public JwtTokenUtil(ApplicationProperties applicationProperties) {
@@ -40,7 +38,7 @@ public class JwtTokenUtil {
                 .setClaims(claims)
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_LIFETIME * 1000))
+                .setExpiration(new Date(System.currentTimeMillis() + applicationProperties.getTokenLifetime() * 1000))
                 .signWith(SignatureAlgorithm.HS512, applicationProperties.getSecret())
                 .compact();
     }

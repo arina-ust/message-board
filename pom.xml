@@ -11,7 +11,7 @@
 	<groupId>home.assignment</groupId>
 	<artifactId>message-board</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<packaging>war</packaging>
+	<packaging>jar</packaging>
 	<name>message-board</name>
 	<description>Storytel backend coding challenge</description>
 

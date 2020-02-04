@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 public class ApplicationProperties {
 
     private String secret;
+    private long tokenLifetime;
 
     public String getSecret() {
         return secret;
@@ -15,5 +16,13 @@ public class ApplicationProperties {
 
     public void setSecret(String secret) {
         this.secret = secret;
+    }
+
+    public long getTokenLifetime() {
+        return tokenLifetime;
+    }
+
+    public void setTokenLifetime(long tokenLifetime) {
+        this.tokenLifetime = tokenLifetime;
     }
 }
