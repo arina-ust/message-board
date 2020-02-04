@@ -4,6 +4,7 @@ import home.assignment.messageboard.service.CustomUserDetailsService;
 import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -15,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Collections;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
@@ -53,8 +55,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             chain.doFilter(request, response);
             return;
         }
-        // TODO: is it superfluous to to call db on every request? can do without it??
-        UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
+        // Since application needs only the username and the tokens are short-lived,
+        // it is possible to neglect obtaining user details from database
+        UserDetails userDetails = new User(username, "not specified", Collections.emptyList());
         UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(request, userDetails);
 
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
