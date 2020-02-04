@@ -11,6 +11,7 @@ import home.assignment.messageboard.service.UsersService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -22,7 +23,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.management.InstanceAlreadyExistsException;
 import java.net.URI;
-import java.util.NoSuchElementException;
 
 @Controller
 public class BoardController implements V1ApiDelegate {
@@ -90,7 +90,7 @@ public class BoardController implements V1ApiDelegate {
         try {
             messagesService.deleteMessage(id, username);
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.noContent().build();
     }
@@ -105,10 +105,8 @@ public class BoardController implements V1ApiDelegate {
         body.setId(id);
         try {
             messagesService.updateMessage(body);
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.notFound().build();
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+            return ResponseEntity.status(HttpStatus.CONFLICT).build();
         }
         return ResponseEntity.noContent().build();
     }

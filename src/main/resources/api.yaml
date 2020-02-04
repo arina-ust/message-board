@@ -120,6 +120,7 @@ paths:
       responses:
         201:
           description: 'Created new message'
+  # TODO: add bodies with error messages to responses
   /v1/messages/{id}:
     put:
       summary: 'Update message'
@@ -144,8 +145,8 @@ paths:
       responses:
         204:
           description: 'Updated the message'
-        404:
-          description: 'Message not found, cannot update it'
+        409:
+          description: 'Failed to update the message'
     delete:
       summary: 'Delete message'
       tags:
@@ -162,6 +163,8 @@ paths:
       responses:
         204:
           description: 'Deleted the message'
+        409:
+          description: 'Failed to delete the message'
 
 components:
   schemas:
