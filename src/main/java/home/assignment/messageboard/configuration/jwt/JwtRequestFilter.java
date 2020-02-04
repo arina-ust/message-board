@@ -35,6 +35,7 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         String requestTokenHeader = request.getHeader("Authorization");
 
         if (requestTokenHeader == null || !requestTokenHeader.startsWith(PREFIX)) {
+            chain.doFilter(request, response);
             return;
         }
 
@@ -44,13 +45,15 @@ public class JwtRequestFilter extends OncePerRequestFilter {
         try {
             username = jwtTokenUtil.getUsernameFromToken(token);
         } catch (ExpiredJwtException e) {
+            chain.doFilter(request, response);
             return;
         }
 
         if (username == null || SecurityContextHolder.getContext().getAuthentication() != null) {
+            chain.doFilter(request, response);
             return;
         }
-
+        // TODO: is it superfluous to to call db on every request? can do without it??
         UserDetails userDetails = jwtUserDetailsService.loadUserByUsername(username);
         UsernamePasswordAuthenticationToken authenticationToken = getUsernamePasswordAuthenticationToken(request, userDetails);
 

@@ -29,7 +29,7 @@ public class JwtTokenUtil {
 
     private Claims getClaims(String token) throws ExpiredJwtException {
         return Jwts.parser()
-                    .setSigningKey(applicationProperties.getJwtSecret())
+                    .setSigningKey(applicationProperties.getSecret())
                     .parseClaimsJws(token)
                     .getBody();
     }
@@ -41,7 +41,7 @@ public class JwtTokenUtil {
                 .setSubject(username)
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_LIFETIME * 1000))
-                .signWith(SignatureAlgorithm.HS512, applicationProperties.getJwtSecret())
+                .signWith(SignatureAlgorithm.HS512, applicationProperties.getSecret())
                 .compact();
     }
 

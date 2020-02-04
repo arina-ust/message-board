@@ -86,7 +86,7 @@ public class BoardController implements V1ApiDelegate {
     @Override
     public ResponseEntity<Void> deleteMessage(Integer id) {
         logger.debug("Received delete message request for message with id {}", id);
-        messagesService.deleteMessage(id);
+        messagesService.deleteMessage(id); // TODO: can delete any message, even by other token
         return ResponseEntity.noContent().build();
     }
 
@@ -97,8 +97,9 @@ public class BoardController implements V1ApiDelegate {
 
         logger.debug("Received update message request for user {}, message {}", username, body);
 
+        body.setId(id);
         try {
-            messagesService.updateMessage(body);
+            messagesService.updateMessage(body); // TODO: can update any message, even by other token
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
         }

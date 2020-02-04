@@ -1,17 +1,19 @@
 package home.assignment.messageboard.configuration;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.annotation.Configuration;
 
-@ConfigurationProperties
+@Configuration
+@ConfigurationProperties(prefix = "jwt")
 public class ApplicationProperties {
 
-    private String jwtSecret;
+    private String secret;
 
-    public String getJwtSecret() {
-        return jwtSecret;
+    public String getSecret() {
+        return secret;
     }
 
-    public void setJwtSecret(String jwtSecret) {
-        this.jwtSecret = jwtSecret;
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }
