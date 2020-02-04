@@ -12,7 +12,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.OffsetDateTime;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Repository
 public class MessagesRepository {
@@ -30,9 +29,7 @@ public class MessagesRepository {
         dslContext.insertInto(messagesTable)
                 .set(messagesTable.TITLE, message.getTitle())
                 .set(messagesTable.TEXT, message.getText())
-                .set(messagesTable.USER_ID, dslContext.select(Users.USERS.ID)
-                        .from(Users.USERS)
-                        .where(Users.USERS.USERNAME.eq(message.getUsername())))
+                .set(messagesTable.AUTHOR, message.getUsername())
                 .set(messagesTable.CREATED_AT, OffsetDateTime.now())
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .execute();
@@ -40,11 +37,8 @@ public class MessagesRepository {
     }
 
     public List<Message> getMessagesForUser(String username, Integer offset, Integer limit) {
-        return dslContext.select(messagesTable.ID, usersTable.USERNAME, messagesTable.TITLE, messagesTable.TEXT,
-                messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
-                .from(messagesTable)
-                .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
-                .where(usersTable.USERNAME.eq(username))
+        return dslContext.selectFrom(messagesTable)
+                .where(messagesTable.AUTHOR.eq(username))
                 .orderBy(messagesTable.UPDATED_AT.desc())
                 .offset(offset)
                 .limit(limit)
@@ -53,10 +47,7 @@ public class MessagesRepository {
     }
 
     public List<Message> getAllMessages(Integer offset, Integer limit) {
-        return dslContext.select(messagesTable.ID, usersTable.USERNAME, messagesTable.TITLE, messagesTable.TEXT,
-                messagesTable.CREATED_AT, messagesTable.UPDATED_AT)
-                .from(messagesTable)
-                .join(usersTable).on(usersTable.ID.eq(messagesTable.USER_ID))
+        return dslContext.selectFrom(messagesTable)
                 .orderBy(messagesTable.CREATED_AT.desc())
                 .offset(offset)
                 .limit(limit)
@@ -67,27 +58,38 @@ public class MessagesRepository {
     public void updateMessage(Message message) {
         int messageId = message.getId();
 
-        if (!exists(messageId)) {
-            throw new NoSuchElementException("Message with id = " + messageId + " does not exist. Cannot update it!");
-        }
-
-        dslContext.update(messagesTable)
+        int rowsAffected = dslContext.update(messagesTable)
                 .set(messagesTable.TITLE, message.getTitle())
                 .set(messagesTable.TEXT, message.getText())
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .where(messagesTable.ID.eq(messageId))
+                .and(messagesTable.AUTHOR.eq(message.getUsername()))
                 .execute();
 
-        logger.info("Updated message {}", message);
-    }
-
-    private boolean exists(int messageId) {
-        return dslContext.selectFrom(messagesTable).where(messagesTable.ID.eq(messageId)).fetchAny() != null;
+        if (rowsAffected == 0) {
+            logger.error("Failed to update. Either there is no message with id {} or it was created by another user" +
+                    ", not {}", messageId, message.getUsername());
+            throw new IllegalArgumentException("Message with id = " + messageId + " not found or " +
+                    "it was created by another user. Cannot update it!");
+        } else {
+            logger.info("Updated message {}", message);
+        }
     }
 
     @Transactional
-    public void deleteMessage(int messageId) {
-        dslContext.deleteFrom(messagesTable).where(messagesTable.ID.eq(messageId)).execute();
-        logger.info("Deleted message  with id {}", messageId);
+    public void deleteMessage(int messageId, String username) {
+        int rowsAffected = dslContext.deleteFrom(messagesTable)
+                .where(messagesTable.ID.eq(messageId))
+                .and(messagesTable.AUTHOR.eq(username))
+                .execute();
+
+        if (rowsAffected == 0) {
+            logger.error("Did not find message to delete. Either there is no message with id {} " +
+                    "or it was created by another user, not {}", messageId, username);
+            throw new IllegalArgumentException("Message with id = " + messageId + " not found or " +
+                    "it was created by another user. Cannot delete it!");
+        } else {
+            logger.info("Deleted message  with id {}", messageId);
+        }
     }
 }

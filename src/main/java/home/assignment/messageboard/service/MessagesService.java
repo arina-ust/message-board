@@ -66,8 +66,8 @@ public class MessagesService {
         );
     }
 
-    public void deleteMessage(int messageId) {
-        messagesRepository.deleteMessage(messageId);
+    public void deleteMessage(int messageId, String username) {
+        messagesRepository.deleteMessage(messageId, username);
     }
 
     public void updateMessage(MessageDTO messageDTO) {

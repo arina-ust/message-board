@@ -96,7 +96,7 @@ public class MessagesServiceTest {
         assertEquals(3, messagesService.getAllMessages(null, null).size());
 
         MessageDTO message = messagesService.getMessagesForUser(USERNAME_1, null, null).get(0);
-        messagesService.deleteMessage(message.getId());
+        messagesService.deleteMessage(message.getId(), USERNAME_1);
 
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_2, null, null).size());
