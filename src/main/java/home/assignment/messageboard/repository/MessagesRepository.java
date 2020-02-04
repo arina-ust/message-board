@@ -29,7 +29,7 @@ public class MessagesRepository {
         dslContext.insertInto(messagesTable)
                 .set(messagesTable.TITLE, message.getTitle())
                 .set(messagesTable.TEXT, message.getText())
-                .set(messagesTable.AUTHOR, message.getUsername())
+                .set(messagesTable.AUTHOR, message.getAuthor())
                 .set(messagesTable.CREATED_AT, OffsetDateTime.now())
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .execute();
@@ -63,12 +63,12 @@ public class MessagesRepository {
                 .set(messagesTable.TEXT, message.getText())
                 .set(messagesTable.UPDATED_AT, OffsetDateTime.now())
                 .where(messagesTable.ID.eq(messageId))
-                .and(messagesTable.AUTHOR.eq(message.getUsername()))
+                .and(messagesTable.AUTHOR.eq(message.getAuthor()))
                 .execute();
 
         if (rowsAffected == 0) {
             logger.error("Failed to update. Either there is no message with id {} or it was created by another user" +
-                    ", not {}", messageId, message.getUsername());
+                    ", not {}", messageId, message.getAuthor());
             throw new IllegalArgumentException("Message with id = " + messageId + " not found or " +
                     "it was created by another user. Cannot update it!");
         } else {

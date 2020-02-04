@@ -6,15 +6,15 @@ import java.util.Objects;
 public class Message {
 
     private Integer id;
-    private String username;
+    private String author;
     private String title;
     private String text;
     private OffsetDateTime createdAt;
     private OffsetDateTime updatedAt;
 
-    public Message(Integer id, String username, String title, String text, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
+    public Message(Integer id, String author, String title, String text, OffsetDateTime createdAt, OffsetDateTime updatedAt) {
         this.id = id;
-        this.username = username;
+        this.author = author;
         this.title = title;
         this.text = text;
         this.createdAt = createdAt;
@@ -33,8 +33,8 @@ public class Message {
         return text;
     }
 
-    public String getUsername() {
-        return username;
+    public String getAuthor() {
+        return author;
     }
 
     public OffsetDateTime getCreatedAt() {
@@ -65,7 +65,7 @@ public class Message {
     public String toString() {
         return "Message{" +
                 "id=" + id +
-                ", username=" + username +
+                ", author=" + author +
                 ", title='" + title + '\'' +
                 ", text='" + text + '\'' +
                 ", createdAt=" + createdAt +

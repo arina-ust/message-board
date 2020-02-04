@@ -33,7 +33,7 @@ public class MessagesService {
                 .id(message.getId())
                 .title(message.getTitle())
                 .text(message.getText())
-                .username(message.getUsername())
+                .username(message.getAuthor())
                 .createdAt(message.getCreatedAt().format(DATE_TIME_FORMATTER))
                 .updatedAt(message.getUpdatedAt().format(DATE_TIME_FORMATTER));
     }
