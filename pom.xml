@@ -67,12 +67,6 @@
 		</dependency>
 
 		<dependency>
-			<groupId>org.flywaydb</groupId>
-			<artifactId>flyway-core</artifactId>
-			<version>5.2.4</version>
-		</dependency>
-
-		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
 			<scope>provided</scope>
@@ -139,29 +133,6 @@
 			</plugin>
 
 			<plugin>
-				<groupId>org.flywaydb</groupId>
-				<artifactId>flyway-maven-plugin</artifactId>
-				<version>3.0</version>
-
-				<executions>
-					<execution>
-						<phase>generate-sources</phase>
-						<goals>
-							<goal>migrate</goal>
-						</goals>
-					</execution>
-				</executions>
-
-				<configuration>
-					<url>${db.url}</url>
-					<user>${db.username}</user>
-					<locations>
-						<location>filesystem:src/main/resources/db/migration</location>
-					</locations>
-				</configuration>
-			</plugin>
-
-			<plugin>
 				<groupId>org.jooq</groupId>
 				<artifactId>jooq-codegen-maven</artifactId>
 
@@ -185,7 +156,7 @@
 							<inputSchema>MESSAGE_BOARD</inputSchema>
 						</database>
 						<target>
-							<packageName>org.jooq.generated.flyway.db.h2</packageName>
+							<packageName>org.jooq.generated.db</packageName>
 							<directory>target/generated-sources/jooq-h2</directory>
 						</target>
 					</generator>

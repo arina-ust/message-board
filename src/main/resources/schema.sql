@@ -1,3 +1,8 @@
+DROP SCHEMA message_board IF EXISTS;
+
+CREATE SCHEMA message_board;
+
+
 CREATE SEQUENCE message_board.s_users_id START WITH 1;
 
 CREATE TABLE message_board.users (
@@ -24,5 +29,3 @@ CREATE TABLE message_board.messages (
     CONSTRAINT pk_t_messages PRIMARY KEY (id),
     CONSTRAINT fk_t_messages_user_id FOREIGN KEY (author) REFERENCES message_board.users(username)
 );
-
-

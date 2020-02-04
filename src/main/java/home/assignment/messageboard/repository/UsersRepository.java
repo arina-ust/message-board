@@ -2,8 +2,8 @@ package home.assignment.messageboard.repository;
 
 import home.assignment.messageboard.model.User;
 import org.jooq.DSLContext;
-import org.jooq.generated.flyway.db.h2.tables.Users;
-import org.jooq.generated.flyway.db.h2.tables.records.UsersRecord;
+import org.jooq.generated.db.tables.Users;
+import org.jooq.generated.db.tables.records.UsersRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
