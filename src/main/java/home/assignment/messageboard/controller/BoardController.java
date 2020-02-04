@@ -87,7 +87,11 @@ public class BoardController implements V1ApiDelegate {
     public ResponseEntity<Void> deleteMessage(Integer id) {
         logger.debug("Received delete message request for message with id {}", id);
         String username = getUsernameFromToken();
-        messagesService.deleteMessage(id, username);
+        try {
+            messagesService.deleteMessage(id, username);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
         return ResponseEntity.noContent().build();
     }
 
@@ -103,6 +107,8 @@ public class BoardController implements V1ApiDelegate {
             messagesService.updateMessage(body);
         } catch (NoSuchElementException e) {
             return ResponseEntity.notFound().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
         }
         return ResponseEntity.noContent().build();
     }
