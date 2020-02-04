@@ -77,22 +77,4 @@ public class UsersServiceTest {
         assertThrows(InstanceAlreadyExistsException.class, () -> usersService.createUser(userDTO));
     }
 
-    @Test
-    public void isPasswordVerifiedTest() {
-        String username1 = "user1@email.com";
-        String password1 = "123";
-
-        UserDTO userDTO = new UserDTO();
-        userDTO.setUsername(username1);
-        userDTO.setPassword(password1);
-
-        createUserOrFail(userDTO);
-
-        assertTrue(usersService.isPasswordVerified(userDTO));
-
-        userDTO.setPassword("12");
-
-        assertFalse(usersService.isPasswordVerified(userDTO));
-    }
-
 }

@@ -31,9 +31,4 @@ public class UsersService {
         usersRepository.createUser(user);
     }
 
-    public boolean isPasswordVerified(UserDTO userDto) {
-        User user = usersRepository.getUser(userDto.getUsername());
-        return passwordEncoder.matches(userDto.getPassword(), user.getPasswordHash());
-    }
-
 }

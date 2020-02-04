@@ -8,7 +8,6 @@ import home.assignment.messageboard.model.UserDTO;
 import home.assignment.messageboard.service.CustomUserDetailsService;
 import home.assignment.messageboard.service.MessagesService;
 import home.assignment.messageboard.service.UsersService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,7 +23,7 @@ import java.net.URI;
 import java.util.NoSuchElementException;
 
 @Controller
-public class MessagesController implements V1ApiDelegate {
+public class BoardController implements V1ApiDelegate {
 
     private MessagesService messagesService;
     private UsersService usersService;
@@ -33,11 +32,11 @@ public class MessagesController implements V1ApiDelegate {
     private JwtTokenUtil jwtTokenUtil;
     private CustomUserDetailsService userDetailsService;
 
-    public MessagesController(MessagesService messagesService,
-                              UsersService usersService,
-                              @Lazy AuthenticationManager authenticationManager,
-                              JwtTokenUtil jwtTokenUtil,
-                              CustomUserDetailsService userDetailsService) {
+    public BoardController(MessagesService messagesService,
+                           UsersService usersService,
+                           AuthenticationManager authenticationManager,
+                           JwtTokenUtil jwtTokenUtil,
+                           CustomUserDetailsService userDetailsService) {
         this.messagesService = messagesService;
         this.usersService = usersService;
         this.authenticationManager = authenticationManager;
