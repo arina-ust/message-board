@@ -95,11 +95,18 @@ public class MessagesServiceTest {
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_2, null, null).size());
         assertEquals(3, messagesService.getAllMessages(null, null).size());
 
-        MessageDTO message = messagesService.getMessagesForUser(USERNAME_1, null, null).get(0);
-        messagesService.deleteMessage(message.getId(), USERNAME_1);
+        MessageDTO messageByUser1 = messagesService.getMessagesForUser(USERNAME_1, null, null).get(0);
+        messagesService.deleteMessage(messageByUser1.getId(), USERNAME_1);
 
         assertEquals(1, messagesService.getMessagesForUser(USERNAME_1, null, null).size());
-        assertEquals(1, messagesService.getMessagesForUser(USERNAME_2, null, null).size());
+        assertEquals(2, messagesService.getAllMessages(null, null).size());
+
+        List<MessageDTO> messagesByUser2 = messagesService.getMessagesForUser(USERNAME_2, null, null);
+        assertEquals(1, messagesByUser2.size());
+
+        assertThrows(IllegalArgumentException.class, () ->
+                messagesService.deleteMessage(messagesByUser2.get(0).getId(), USERNAME_1));
+
         assertEquals(2, messagesService.getAllMessages(null, null).size());
     }
 
@@ -135,6 +142,10 @@ public class MessagesServiceTest {
         assertEquals(text2, messageUpdated.getText());
         assertNotEquals(differenceInCreatedAndUpdated, OffsetDateTime.parse(messageUpdated.getCreatedAt()).getNano() -
                 OffsetDateTime.parse(messageUpdated.getUpdatedAt()).getNano());
+
+        MessageDTO incorrectDTO = createMessageDTO(title2, text2, USERNAME_2);
+        incorrectDTO.setId(messageUpdated.getId());
+        assertThrows(IllegalArgumentException.class, () -> messagesService.updateMessage(incorrectDTO));
     }
 
     @Test
