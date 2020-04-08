@@ -1,4 +1,4 @@
-# Storytel Backend Coding Challenge
+# Backend Coding Challenge
 
 To build and run the application, please, follow the steps:
 

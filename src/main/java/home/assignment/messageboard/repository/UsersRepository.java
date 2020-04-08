@@ -27,7 +27,7 @@ public class UsersRepository {
                 .set(usersTable.PASSWORDHASH, user.getPasswordHash())
                 .execute();
 
-        logger.info("Created new user {}", user);
+        logger.info("Created new user {}", user.getUserName());
     }
 
     public User getUser(String username) {
